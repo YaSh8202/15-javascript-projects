@@ -1,3 +1,7 @@
+// get only unique categories - Hardest one
+// iterate over categories return buttons
+// make sure to select buttons when they are available
+
 const menu = [
   {
     id: 1,
@@ -71,33 +75,26 @@ const menu = [
     img: "./images/item-9.jpeg",
     desc: `skateboard fam synth authentic semiotics. Live-edge lyft af, edison bulb yuccie crucifix microdosing.`,
   },
+  {
+    id: 10,
+    title: "steak dinner",
+    category: "dinner",
+    price: 39.99,
+    img: "./images/item-10.jpeg",
+    desc: `skateboard fam synth authentic semiotics. Live-edge lyft af, edison bulb yuccie crucifix microdosing.`,
+  },
 ];
 
-const sectionCenter = document.querySelector('.section-center');
-const filterBtns = document.querySelectorAll('.filter-btn');
+const sectionCenter = document.querySelector(".section-center");
+const btnContainer = document.querySelector(".btn-container");
 
-
-window.addEventListener('DOMContentLoaded',()=>{
+window.addEventListener("DOMContentLoaded", () => {
   displayMenuItems(menu);
+  displayMenuButtons();
 });
 
-//filter items
-filterBtns.forEach((btn)=>{
-  btn.addEventListener('click',(e)=>{
-    const category = (e.currentTarget.dataset.id);
-    let category_menu = menu.filter((item)=>{
-      if(category=='all')
-      return true;
-      return item.category == category;
-    });
-    displayMenuItems(category_menu);
-  });
-})
-
-
-function displayMenuItems(menuItems){
-  let displayMenu = menuItems.map(function(item){
-
+function displayMenuItems(menuItems) {
+  let displayMenu = menuItems.map(function (item) {
     return `<article class="menu-item">
     <img src=${item.img} class="photo" alt=${item.title}>
     <div class="item-info">
@@ -107,8 +104,38 @@ function displayMenuItems(menuItems){
       </header>
       <p class="item-text">${item.desc}</p>
     </div>
-  </article>`
+  </article>`;
   });
   displayMenu = displayMenu.join("");
   sectionCenter.innerHTML = displayMenu;
+}
+
+function displayMenuButtons(){
+  const categories = menu.reduce(
+    function (values, item) {
+      if (!values.includes(item.category)) {
+        values.push(item.category);
+      }
+      return values;
+    },
+    ["all"]
+  );
+  const categoryBtns = categories
+    .map((category) => {
+      return `<button class="filter-btn" type="button" data-id=${category}>${category}</button>`;
+    })
+    .join("");
+  btnContainer.innerHTML = categoryBtns;
+  const filterBtns = btnContainer.querySelectorAll(".filter-btn");
+  //filter items
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const category = e.currentTarget.dataset.id;
+      let category_menu = menu.filter((item) => {
+        if (category == "all") return true;
+        return item.category == category;
+      });
+      displayMenuItems(category_menu);
+    });
+  });
 }
